@@ -1,0 +1,46 @@
+Root cause of failure
+The job failed due to a RuboCop style violation in the file lib/release_highlights/validator.rb. The RuboCop linter detected a Rails/Output offense on line 26, column 7, where a puts statement is being used to write to stdout:
+
+puts "[Profiler] Validation for #{file} took #{time.round(4)}s"
+Insert at cursor
+
+The RuboCop rule Rails/Output prohibits writing directly to stdout in Rails applications and recommends using Rails's logger instead. This violation caused the linting job to exit with code 1, indicating failure.
+The sequence of events was:
+
+Bundle installation completed successfully
+Database configuration was set up
+RuboCop was executed to check code style compliance
+RuboCop found 1 offense in the validator file
+The job terminated with exit code 1 due to the style violation
+
+
+Example Fix
+To resolve this issue, replace the puts statement with Rails logger usage. Here's the specific change needed in lib/release_highlights/validator.rb at line 26:
+Current code:
+
+puts "[Profiler] Validation for #{file} took #{time.round(4)}s"
+Insert at cursor
+
+Fixed code:
+
+Rails.logger.info "[Profiler] Validation for #{file} took #{time.round(4)}s"
+Insert at cursor
+
+Alternatively, if you need to maintain the current behavior temporarily, you could:
+
+
+Disable the rule for this specific line by adding a comment:
+
+puts "[Profiler] Validation for #{file} took #{time.round(4)}s" # rubocop:disable Rails/Output
+Insert at cursor
+
+
+
+Use a different logging approach if Rails logger is not appropriate for this context:
+
+warn "[Profiler] Validation for #{file} took #{time.round(4)}s"
+Insert at cursor
+
+
+
+The RuboCop output indicates this offense is autocorrectable, so you could also run rubocop -a to automatically fix this issue, though manual review of the automatic correction would be recommended to ensure it meets your logging requirements.
