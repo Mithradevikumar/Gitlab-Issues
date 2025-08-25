@@ -1,0 +1,61 @@
+prerequistes:
+GDK
+
+==============================================
+To install the GDK:
+
+Ensure you’re on one of the supported platforms.
+
+Confirm that Git is installed, and that you have a source code editor.
+
+Choose the directory where you want to install the GDK. The installation script installs the application to a new subdirectory called gdk.
+
+Keep the directory name short. Some users encounter issues with long directory names.
+
+From the command line, go to that directory. In this example, create and change to the dev directory:
+
+shell
+mkdir ~/dev && cd "$_"
+Run the one-line installation command:
+
+shell
+curl "https://gitlab.com/gitlab-org/gitlab-development-kit/-/raw/main/support/install" | bash
+This script clones the GitLab Development Kit (GDK) repository into a new subdirectory, and sets up necessary dependencies using the asdf version manager (including Ruby, Node.js, PostgreSQL, Redis, and more).
+
+If you’re using another version manager for those dependencies, refer to the troubleshooting section to avoid conflicts.
+
+For the message Where would you like to install the GDK? [./gdk], press Enter to accept the default location.
+
+For the message Which GitLab repo URL would you like to clone?, enter the GitLab community fork URL:
+
+shell
+https://gitlab.com/gitlab-community/gitlab.git
+For the message GitLab would like to collect basic error and usage data, choose your option based on the prompt.
+
+While the installation is running, copy any messages that are displayed. If you have any problems with the installation, you can use this output as part of troubleshooting.
+
+After the installation is complete, copy the source command from the message corresponding to your shell from the message INFO: To make sure GDK commands are available in this shell:
+
+shell
+source ~/.asdf/asdf.sh
+Go to the directory where the GDK was installed:
+
+shell
+cd gdk
+Run gdk truncate-legacy-tables to ensure that the data in the main and CI databases are truncated, then gdk doctor to confirm the GDK installation:
+
+shell
+gdk truncate-legacy-tables && gdk doctor
+If gdk doctor returns errors, consult the Troubleshoot GDK section.
+If gdk doctor returns Your GDK is healthy, proceed to the next step.
+Start the GDK:
+
+shell
+gdk start
+Wait for GitLab available at http://127.0.0.1:3000, and connect to the GDK using the URL provided.
+
+Sign in with the username root and the password 5iveL!fe. You will be prompted to reset your password the first time you sign in.
+
+Continue to Change the code with the GDK.
+
+Update an existing GDK installa
