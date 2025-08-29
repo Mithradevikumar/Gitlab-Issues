@@ -17,8 +17,13 @@ module Packages
           "::Packages::Debian::#{container_type.capitalize}Distribution".constantize
         end
 
-        belongs_to :component, class_name: "Packages::Debian::#{container_type.capitalize}Component", inverse_of: :files
-        belongs_to :architecture, class_name: "Packages::Debian::#{container_type.capitalize}Architecture", inverse_of: :files, optional: true
+        belongs_to :component,
+                   class_name: "Packages::Debian::#{container_type.capitalize}Component",
+                   inverse_of: :files
+        belongs_to :architecture,
+                   class_name: "Packages::Debian::#{container_type.capitalize}Architecture",
+                   inverse_of: :files,
+                   optional: true
 
         delegate container_type, to: :component
 
@@ -50,7 +55,6 @@ module Packages
         end
 
         scope :with_file_type, ->(file_type) { where(file_type: file_type) }
-
         scope :with_architecture, ->(architecture) { where(architecture: architecture) }
 
         scope :with_architecture_name, ->(architecture_name) do
@@ -62,7 +66,6 @@ module Packages
         scope :with_file_sha256, ->(file_sha256) { where(file_sha256: file_sha256) }
 
         scope :preload_distribution, -> { includes(component: :distribution) }
-
         scope :updated_before, ->(reference) { where("#{table_name}.updated_at < ?", reference) }
 
         mount_file_store_uploader Packages::Debian::ComponentFileUploader
@@ -73,12 +76,14 @@ module Packages
           case file_type
           when 'di_packages'
             'Packages'
-          else
+          when 'packages', 'sources'
             file_type.capitalize
           end
         end
 
         def relative_path
+          return unless file_type
+
           case file_type
           when 'packages'
             "#{component.name}/binary-#{architecture.name}/#{file_name}#{extension}"
